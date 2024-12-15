@@ -226,13 +226,14 @@ rocksdb::Status initRocksdbOptions(rocksdb::Options& baseOpts,
   rocksdb::DBOptions dbOpts;
   rocksdb::ColumnFamilyOptions cfOpts;
   rocksdb::BlockBasedTableOptions bbtOpts;
-
+  rocksdb::ConfigOptions configOptions;
   // DBOptions
   std::unordered_map<std::string, std::string> dbOptsMap;
   if (!loadOptionsMap(dbOptsMap, FLAGS_rocksdb_db_options)) {
     return rocksdb::Status::InvalidArgument();
   }
-  s = GetDBOptionsFromMap(rocksdb::DBOptions(), dbOptsMap, &dbOpts, true);
+  // s = GetDBOptionsFromMap(rocksdb::DBOptions(), dbOptsMap, &dbOpts, true);
+  s = GetDBOptionsFromMap(configOptions, rocksdb::DBOptions(), dbOptsMap, &dbOpts);
   if (!s.ok()) {
     return s;
   }
@@ -260,7 +261,8 @@ rocksdb::Status initRocksdbOptions(rocksdb::Options& baseOpts,
   if (!loadOptionsMap(cfOptsMap, FLAGS_rocksdb_column_family_options)) {
     return rocksdb::Status::InvalidArgument();
   }
-  s = GetColumnFamilyOptionsFromMap(rocksdb::ColumnFamilyOptions(), cfOptsMap, &cfOpts, true);
+  s = GetColumnFamilyOptionsFromMap(configOptions,
+  rocksdb::ColumnFamilyOptions(), cfOptsMap, &cfOpts);
   if (!s.ok()) {
     return s;
   }
@@ -299,8 +301,8 @@ rocksdb::Status initRocksdbOptions(rocksdb::Options& baseOpts,
     if (!loadOptionsMap(bbtOptsMap, FLAGS_rocksdb_block_based_table_options)) {
       return rocksdb::Status::InvalidArgument();
     }
-    s = GetBlockBasedTableOptionsFromMap(
-        rocksdb::BlockBasedTableOptions(), bbtOptsMap, &bbtOpts, true);
+    s = GetBlockBasedTableOptionsFromMap(configOptions,
+        rocksdb::BlockBasedTableOptions(), bbtOptsMap, &bbtOpts);
     if (!s.ok()) {
       return s;
     }

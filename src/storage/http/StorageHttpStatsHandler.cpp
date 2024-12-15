@@ -9,6 +9,7 @@
 
 #include "common/base/Base.h"
 #include "kvstore/RocksEngineConfig.h"
+#include "rocksdb/statistics.h"
 
 namespace nebula {
 namespace storage {
